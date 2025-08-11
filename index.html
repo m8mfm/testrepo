@@ -1,824 +1,886 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Special Birthday Surprise</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
-        
-        :root {
-            --primary: #ff6b8b;
-            --secondary: #ffb3c6;
-            --dark: #5a2a4e;
-            --light: #fff9fb;
-            --blur: 8px;
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap");
+
+      :root {
+        --primary: #ff6b8b;
+        --secondary: #ffb3c6;
+        --dark: #5a2a4e;
+        --light: #fff9fb;
+        --blur: 8px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: var(--light);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-x: hidden;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 800px;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+      }
+
+      /* Loading Animation */
+      .loader {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        z-index: 100;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      .loader-content {
+        display: flex;
+        gap: 15px;
+      }
+
+      .loader-dot {
+        width: 20px;
+        height: 20px;
+        background-color: var(--primary);
+        border-radius: 50%;
+        animation: bounce 1s infinite ease-in-out;
+      }
+
+      .loader-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .loader-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      .loader-text {
+        margin-top: 20px;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+
+      /* Password Screen */
+      .password-screen {
+        background: white;
+        padding: 3rem 2rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        margin: 0 auto;
+        transition: all 0.5s ease;
+      }
+
+      .password-screen h2 {
+        color: var(--dark);
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+      }
+
+      .hint {
+        color: var(--primary);
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+        font-style: italic;
+      }
+
+      .password-input {
+        width: 100%;
+        padding: 12px 20px;
+        border: 2px solid #eee;
+        border-radius: 50px;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s;
+        text-align: center;
+      }
+
+      .password-input:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      .submit-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 5px 15px rgba(255, 107, 139, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .submit-btn:hover {
+        background: #ff4775;
+        transform: translateY(-3px);
+      }
+
+      .submit-btn:active {
+        transform: translateY(1px);
+      }
+
+      /* Birthday Screen (hidden initially) */
+      .birthday-screen {
+        display: none;
+        animation: fadeIn 1s;
+      }
+
+      .birthday-header {
+        position: relative;
+        margin-bottom: 2rem;
+      }
+
+      .birthday-title {
+        font-size: 3rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        animation: bounce 2s infinite;
+        font-family: "Dancing Script", cursive;
+      }
+
+      .birthday-name {
+        font-size: 2rem;
+        color: var(--dark);
+        margin-bottom: 2rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      .birthday-name:after {
+        content: "";
+        position: absolute;
+        width: 50%;
+        height: 3px;
+        background: var(--primary);
+        bottom: -10px;
+        left: 25%;
+        border-radius: 3px;
+      }
+
+      /* Music Player */
+      .music-section {
+        margin: 2rem 0;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        position: relative;
+      }
+
+      .music-title {
+        font-size: 1.2rem;
+        color: var(--dark);
+        margin-bottom: 1rem;
+      }
+
+      .song-info {
+        font-size: 0.9rem;
+        color: var(--dark);
+        margin-bottom: 1rem;
+        min-height: 20px;
+      }
+
+      .progress-container {
+        width: 100%;
+        height: 5px;
+        background: #eee;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+        cursor: pointer;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: var(--primary);
+        border-radius: 5px;
+        width: 0%;
+        transition: width 0.1s;
+      }
+
+      .time-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: #888;
+        margin-bottom: 1rem;
+      }
+
+      .music-controls {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .music-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        box-shadow: 0 3px 10px rgba(255, 107, 139, 0.3);
+      }
+
+      .music-btn:hover {
+        background: #ff4775;
+        transform: scale(1.1);
+      }
+
+      .music-btn i {
+        font-size: 1.2rem;
+      }
+
+      .main-btn {
+        width: 60px;
+        height: 60px;
+      }
+
+      /* Cards Section */
+      .cards-section {
+        margin: 3rem 0;
+      }
+
+      .cards-title {
+        font-size: 1.5rem;
+        color: var(--dark);
+        margin-bottom: 1.5rem;
+      }
+
+      .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+        cursor: pointer;
+        position: relative;
+        backdrop-filter: blur(var(--blur));
+        -webkit-backdrop-filter: blur(var(--blur));
+      }
+
+      .card-image {
+        width: 100%;
+        height: 0;
+        object-fit: cover;
+        display: none;
+        transition: all 0.3s ease;
+        border-radius: 15px 15px 0 0;
+      }
+
+      .card.has-image .card-image {
+        display: block;
+        height: 0;
+        opacity: 0;
+      }
+
+      .card.active.has-image .card-image {
+        height: 150px;
+        opacity: 1;
+        margin-bottom: 15px;
+      }
+
+      .card-content {
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s;
+      }
+
+      .card-sender {
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .card-message {
+        color: var(--dark);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .card-gift {
+        font-weight: bold;
+        color: var(--primary);
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .card.active {
+        transform: scale(1.03);
+        z-index: 1;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .card.active .card-message,
+      .card.active .card-gift {
+        opacity: 1;
+        max-height: 200px;
+      }
+
+      .card.active .card-content {
+        padding-bottom: 2rem;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
         }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+        to {
+          opacity: 1;
         }
-        
-        body {
-            background-color: var(--light);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
         }
-        
-        .container {
-            width: 100%;
-            max-width: 800px;
-            padding: 2rem;
-            text-align: center;
-            position: relative;
+        50% {
+          transform: translateY(-15px);
         }
-        
-        /* Loading Animation */
-        .loader {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.8);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
         }
-        
-        .loader-content {
-            display: flex;
-            gap: 15px;
+        50% {
+          transform: translateY(-10px);
         }
-        
-        .loader-dot {
-            width: 20px;
-            height: 20px;
-            background-color: var(--primary);
-            border-radius: 50%;
-            animation: bounce 1s infinite ease-in-out;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
         }
-        
-        .loader-dot:nth-child(2) {
-            animation-delay: 0.2s;
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-5px);
         }
-        
-        .loader-dot:nth-child(3) {
-            animation-delay: 0.4s;
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(5px);
         }
-        
-        .loader-text {
-            margin-top: 20px;
-            color: var(--dark);
-            font-size: 1.2rem;
-        }
-        
-        /* Password Screen */
-        .password-screen {
-            background: white;
-            padding: 3rem 2rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 500px;
-            margin: 0 auto;
-            transition: all 0.5s ease;
-        }
-        
-        .password-screen h2 {
-            color: var(--dark);
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-        }
-        
-        .hint {
-            color: var(--primary);
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-            font-style: italic;
-        }
-        
-        .password-input {
-            width: 100%;
-            padding: 12px 20px;
-            border: 2px solid #eee;
-            border-radius: 50px;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            transition: all 0.3s;
-            text-align: center;
-        }
-        
-        .password-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-        
-        .submit-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(255,107,139,0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .submit-btn:hover {
-            background: #ff4775;
-            transform: translateY(-3px);
-        }
-        
-        .submit-btn:active {
-            transform: translateY(1px);
-        }
-        
-        /* Birthday Screen (hidden initially) */
-        .birthday-screen {
-            display: none;
-            animation: fadeIn 1s;
-        }
-        
-        .birthday-header {
-            position: relative;
-            margin-bottom: 2rem;
-        }
-        
+      }
+
+      /* Confetti */
+      .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: var(--primary);
+        opacity: 0;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
         .birthday-title {
-            font-size: 3rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            animation: bounce 2s infinite;
-            font-family: 'Dancing Script', cursive;
+          font-size: 2.5rem;
         }
-        
+
         .birthday-name {
-            font-size: 2rem;
-            color: var(--dark);
-            margin-bottom: 2rem;
-            position: relative;
-            display: inline-block;
+          font-size: 1.5rem;
         }
-        
-        .birthday-name:after {
-            content: '';
-            position: absolute;
-            width: 50%;
-            height: 3px;
-            background: var(--primary);
-            bottom: -10px;
-            left: 25%;
-            border-radius: 3px;
+
+        .container {
+          padding: 1rem;
         }
-        
-        /* Music Player */
-        .music-section {
-            margin: 2rem 0;
-            background: white;
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            position: relative;
-        }
-        
-        .music-title {
-            font-size: 1.2rem;
-            color: var(--dark);
-            margin-bottom: 1rem;
-        }
-        
-        .song-info {
-            font-size: 0.9rem;
-            color: var(--dark);
-            margin-bottom: 1rem;
-            min-height: 20px;
-        }
-        
-        .progress-container {
-            width: 100%;
-            height: 5px;
-            background: #eee;
-            border-radius: 5px;
-            margin-bottom: 1rem;
-            cursor: pointer;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: var(--primary);
-            border-radius: 5px;
-            width: 0%;
-            transition: width 0.1s;
-        }
-        
-        .time-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: #888;
-            margin-bottom: 1rem;
-        }
-        
-        .music-controls {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .music-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-            box-shadow: 0 3px 10px rgba(255,107,139,0.3);
-        }
-        
-        .music-btn:hover {
-            background: #ff4775;
-            transform: scale(1.1);
-        }
-        
-        .music-btn i {
-            font-size: 1.2rem;
-        }
-        
-        .main-btn {
-            width: 60px;
-            height: 60px;
-        }
-        
-        /* Cards Section */
-        .cards-section {
-            margin: 3rem 0;
-        }
-        
-        .cards-title {
-            font-size: 1.5rem;
-            color: var(--dark);
-            margin-bottom: 1.5rem;
-        }
-        
+
         .cards-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
+          grid-template-columns: 1fr;
         }
-        
-        .card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            cursor: pointer;
-            position: relative;
-            backdrop-filter: blur(var(--blur));
-            -webkit-backdrop-filter: blur(var(--blur));
+
+        .music-btn {
+          width: 45px;
+          height: 45px;
         }
-        
-        .card-image {
-            width: 100%;
-            height: 0;
-            object-fit: cover;
-            display: none;
-            transition: all 0.3s ease;
-            border-radius: 15px 15px 0 0;
+
+        .main-btn {
+          width: 55px;
+          height: 55px;
         }
-        
-        .card.has-image .card-image {
-            display: block;
-            height: 0;
-            opacity: 0;
-        }
-        
-        .card.active.has-image .card-image {
-            height: 150px;
-            opacity: 1;
-            margin-bottom: 15px;
-        }
-        
-        .card-content {
-            padding: 1.5rem;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        
-        .card-sender {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .card-message {
-            color: var(--dark);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .card-gift {
-            font-weight: bold;
-            color: var(--primary);
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .card.active {
-            transform: scale(1.03);
-            z-index: 1;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-        
-        .card.active .card-message,
-        .card.active .card-gift {
-            opacity: 1;
-            max-height: 200px;
-        }
-        
-        .card.active .card-content {
-            padding-bottom: 2rem;
-        }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-        
-        /* Confetti */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: var(--primary);
-            opacity: 0;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .birthday-title {
-                font-size: 2.5rem;
-            }
-            
-            .birthday-name {
-                font-size: 1.5rem;
-            }
-            
-            .container {
-                padding: 1rem;
-            }
-            
-            .cards-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .music-btn {
-                width: 45px;
-                height: 45px;
-            }
-            
-            .main-btn {
-                width: 55px;
-                height: 55px;
-            }
-        }
+      }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
     <!-- Loading Animation -->
     <div class="loader" id="loader">
-        <div class="loader-content">
-            <div class="loader-dot"></div>
-            <div class="loader-dot"></div>
-            <div class="loader-dot"></div>
-        </div>
-        <div class="loader-text" id="loaderText">Loading the surprise...</div>
+      <div class="loader-content">
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+      </div>
+      <div class="loader-text" id="loaderText">Loading the surprise...</div>
     </div>
-    
+
     <div class="container">
-        <!-- Password Screen -->
-        <div class="password-screen" id="passwordScreen">
-            <h2>Birthday Secret</h2>
-            <p class="hint">Hint: The best day in the world (7 characters)</p>
-            <input type="text" class="password-input" id="passwordInput" placeholder="Enter the secret code">
-            <button class="submit-btn" id="submitBtn">Unlock the Surprise</button>
-        </div>
-        
-        <!-- Birthday Screen -->
-        <div class="birthday-screen" id="birthdayScreen">
-            <div class="birthday-header">
-                <h1 class="birthday-title">Happy Birthday!</h1>
-                <h2 class="birthday-name">Alyssa</h2>
-                
-                <!-- Music Player -->
-                <div class="music-section">
-                    <h3 class="music-title">Birthday Music</h3>
-                    <div class="song-info" id="songInfo">Select a song</div>
-                    
-                    <div class="progress-container" id="progressContainer">
-                        <div class="progress-bar" id="progressBar"></div>
-                    </div>
-                    
-                    <div class="time-info">
-                        <span id="currentTime">0:00</span>
-                        <span id="duration">0:00</span>
-                    </div>
-                    
-                    <div class="music-controls">
-                        <button class="music-btn" id="prevBtn" title="Previous">
-                            <i class="fas fa-step-backward"></i>
-                        </button>
-                        <button class="music-btn main-btn" id="playBtn" title="Play">
-                            <i class="fas fa-play"></i>
-                        </button>
-                        <button class="music-btn" id="nextBtn" title="Next">
-                            <i class="fas fa-step-forward"></i>
-                        </button>
-                    </div>
-                    <audio id="birthdaySong"></audio>
-                </div>
+      <!-- Password Screen -->
+      <div class="password-screen" id="passwordScreen">
+        <h2>Birthday Secret</h2>
+        <p class="hint">Hint: The best day in the world (7 characters)</p>
+        <input
+          type="text"
+          class="password-input"
+          id="passwordInput"
+          placeholder="Enter the secret code"
+        />
+        <button class="submit-btn" id="submitBtn">Unlock the Surprise</button>
+      </div>
+
+      <!-- Birthday Screen -->
+      <div class="birthday-screen" id="birthdayScreen">
+        <div class="birthday-header">
+          <h1 class="birthday-title">Happy Birthday!</h1>
+          <h2 class="birthday-name">Alyssa</h2>
+
+          <!-- Music Player -->
+          <div class="music-section">
+            <h3 class="music-title">Birthday Music</h3>
+            <div class="song-info" id="songInfo">Select a song</div>
+
+            <div class="progress-container" id="progressContainer">
+              <div class="progress-bar" id="progressBar"></div>
             </div>
-            
-            <!-- Cards Section -->
-            <div class="cards-section">
-                <h3 class="cards-title">Messages from Friends</h3>
-                <div class="cards-container" id="cardsContainer">
-                    <!-- Cards will be added dynamically -->
-                </div>
+
+            <div class="time-info">
+              <span id="currentTime">0:00</span>
+              <span id="duration">0:00</span>
             </div>
+
+            <div class="music-controls">
+              <button class="music-btn" id="prevBtn" title="Previous">
+                <i class="fas fa-step-backward"></i>
+              </button>
+              <button class="music-btn main-btn" id="playBtn" title="Play">
+                <i class="fas fa-play"></i>
+              </button>
+              <button class="music-btn" id="nextBtn" title="Next">
+                <i class="fas fa-step-forward"></i>
+              </button>
+            </div>
+            <audio id="birthdaySong"></audio>
+          </div>
         </div>
+
+        <!-- Cards Section -->
+        <div class="cards-section">
+          <h3 class="cards-title">Messages from Friends</h3>
+          <div class="cards-container" id="cardsContainer">
+            <!-- Cards will be added dynamically -->
+          </div>
+        </div>
+      </div>
     </div>
-    
+
     <!-- Audio elements for sound effects -->
-    <audio id="correctSound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3"></audio>
-    <audio id="wrongSound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3"></audio>
-    <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-modern-click-box-check-1120.mp3"></audio>
-    
+    <audio
+      id="correctSound"
+      src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3"
+    ></audio>
+    <audio
+      id="wrongSound"
+      src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3"
+    ></audio>
+    <audio
+      id="clickSound"
+      src="https://assets.mixkit.co/sfx/preview/mixkit-modern-click-box-check-1120.mp3"
+    ></audio>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const passwordScreen = document.getElementById('passwordScreen');
-            const birthdayScreen = document.getElementById('birthdayScreen');
-            const passwordInput = document.getElementById('passwordInput');
-            const submitBtn = document.getElementById('submitBtn');
-            const playBtn = document.getElementById('playBtn');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const birthdaySong = document.getElementById('birthdaySong');
-            const progressContainer = document.getElementById('progressContainer');
-            const progressBar = document.getElementById('progressBar');
-            const currentTimeEl = document.getElementById('currentTime');
-            const durationEl = document.getElementById('duration');
-            const songInfoEl = document.getElementById('songInfo');
-            const cardsContainer = document.getElementById('cardsContainer');
-            const loader = document.getElementById('loader');
-            const loaderText = document.getElementById('loaderText');
-            const correctSound = document.getElementById('correctSound');
-            const wrongSound = document.getElementById('wrongSound');
-            const clickSound = document.getElementById('clickSound');
-            
-            // Correct password (her birth date: 12/8/2006)
-            const correctPassword = "1282006";
-            
-            // Songs playlist
-            const songs = [
-                {
-                    title: "PillowTalk - Zayn",
-                    src: "songs/song1.mp3"
-                },
-                {
-                    title: "Try me - The weeknd",
-                    src: "songs/song2.mp3"
-                },
-                {
-                    title: "Wasted times - The weeknd",
-                    src: "songs/song3.mp3"
-                },
-                {
-                    title: "Rather lie - The weeknd"",
-                    src: "songs/song4.mp3"
-                },
-                {
-                    title: "Which one - Drake & Central Cee",
-                    src: "songs/song5.mp3"
-                }
-            ];
-            
-            let currentSongIndex = 0;
-            let isPlaying = false;
-            
-            // Sample birthday cards data
-            const birthdayCards = [
-                {
-                    sender: "Gina",
-                    message: "Happiest birthday  my dear 💗 forever grateful for every moment with you 🫶 Best wiches Pooooooookieee 💕💕💕💕",
-                    gift: "Virtual Hug 🫂",
-                    image: "images/gina-alyssa.jpg" 
-                },
-                {
-                    sender: "Grand Pa/Ma",
-                    message: "Happy birthday, Elissa! 💖 Wishing you endless health, joy, and a long, beautiful life. I can’t wait to see you one day as the brilliant doctor you’re meant to be, smashing every dream and goal you’ve ever had!",
-                    gift: "Invitation to the nature 😘",
-                    image: "images/alyssa-grandpama.jpg"
-                },
-                {
-                    sender: "Shahed",
-                    message: "Happy birthday! Can't wait to celebrate with you soon!",
-                    gift: "Gift Card 🛍️",
-                    image: "" 
-                },
-                {
-                    sender: "Family",
-                    message: "Our little angel, the light of our eyes ✨ Having you close is the secret to our happiness 💖 May God protect you with His kindness, and may you achieve everything you dream of 🌸🌟",
-                    gift: "Our Love 💋",
-                    image: "images/family.jpg"
-                }
-            ];
-            
-            // Show loading animation
-            function showLoading(message) {
-                loader.style.display = "flex";
-                if (message) loaderText.textContent = message;
-            }
-            
-            // Hide loading animation
-            function hideLoading() {
-                loader.style.display = "none";
-            }
-            
-            // Play sound effect
-            function playSound(sound) {
-                sound.currentTime = 0;
-                sound.play();
-            }
-            
-            // Submit password
-            submitBtn.addEventListener('click', function() {
-                playSound(clickSound);
-                
-                if (passwordInput.value === correctPassword) {
-                    // Password correct
-                    playSound(correctSound);
-                    showLoading("Preparing your surprise...");
-                    
-                    // Hide password screen
-                    passwordScreen.style.transform = "scale(0.8)";
-                    passwordScreen.style.opacity = "0";
-                    
-                    setTimeout(() => {
-                        passwordScreen.style.display = "none";
-                        
-                        // Simulate loading time (2 seconds)
-                        setTimeout(() => {
-                            birthdayScreen.style.display = "block";
-                            hideLoading();
-                            createConfetti();
-                            
-                            // Load first song
-                            loadSong(currentSongIndex);
-                        }, 2000);
-                    }, 500);
-                    
-                    // Load cards
-                    loadCards();
-                } else {
-                    // Wrong password
-                    playSound(wrongSound);
-                    passwordInput.style.borderColor = "red";
-                    passwordInput.style.animation = "shake 0.5s";
-                    passwordInput.value = "";
-                    passwordInput.placeholder = "Wrong code! Try again";
-                    
-                    // Reset animation
-                    setTimeout(() => {
-                        passwordInput.style.animation = "none";
-                    }, 500);
-                }
-            });
-            
-            // Load song
-            function loadSong(index) {
-                showLoading(`Loading ${songs[index].title}...`);
-                birthdaySong.src = songs[index].src;
-                songInfoEl.textContent = songs[index].title;
-                
-                birthdaySong.addEventListener('loadedmetadata', function() {
-                    durationEl.textContent = formatTime(birthdaySong.duration);
-                    hideLoading();
-                });
-                
-                birthdaySong.addEventListener('error', function() {
-                    hideLoading();
-                    songInfoEl.textContent = "Error loading song";
-                });
-            }
-            
-            // Play/pause song
-            function togglePlay() {
-                playSound(clickSound);
-                
-                if (isPlaying) {
-                    birthdaySong.pause();
-                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                } else {
-                    if (!birthdaySong.src) {
-                        loadSong(currentSongIndex);
-                    }
-                    birthdaySong.play()
-                        .then(() => {
-                            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                        })
-                        .catch(e => {
-                            songInfoEl.textContent = "Click play again to start";
-                        });
-                }
-                isPlaying = !isPlaying;
-            }
-            
-            // Previous song
-            function prevSong() {
-                playSound(clickSound);
-                currentSongIndex--;
-                if (currentSongIndex < 0) {
-                    currentSongIndex = songs.length - 1;
-                }
+      document.addEventListener("DOMContentLoaded", function () {
+        const passwordScreen = document.getElementById("passwordScreen");
+        const birthdayScreen = document.getElementById("birthdayScreen");
+        const passwordInput = document.getElementById("passwordInput");
+        const submitBtn = document.getElementById("submitBtn");
+        const playBtn = document.getElementById("playBtn");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const birthdaySong = document.getElementById("birthdaySong");
+        const progressContainer = document.getElementById("progressContainer");
+        const progressBar = document.getElementById("progressBar");
+        const currentTimeEl = document.getElementById("currentTime");
+        const durationEl = document.getElementById("duration");
+        const songInfoEl = document.getElementById("songInfo");
+        const cardsContainer = document.getElementById("cardsContainer");
+        const loader = document.getElementById("loader");
+        const loaderText = document.getElementById("loaderText");
+        const correctSound = document.getElementById("correctSound");
+        const wrongSound = document.getElementById("wrongSound");
+        const clickSound = document.getElementById("clickSound");
+
+        // Correct password (her birth date: 12/8/2006)
+        const correctPassword = "1282006";
+
+        // Songs playlist
+        const songs = [
+          {
+            title: "PillowTalk - Zayn",
+            src: "songs/song1.mp3",
+          },
+          {
+            title: "Try me - The weeknd",
+            src: "songs/song2.mp3",
+          },
+          {
+            title: "Wasted times - The weeknd",
+            src: "songs/song3.mp3",
+          },
+          {
+            title: "Rather lie - The weeknd",
+            src: "songs/song4.mp3",
+          },
+          {
+            title: "Which one - Drake & Central Cee",
+            src: "songs/song5.mp3",
+          },
+        ];
+
+        let currentSongIndex = 0;
+        let isPlaying = false;
+
+        // Sample birthday cards data
+        const birthdayCards = [
+          {
+            sender: "Gina",
+            message:
+              "Happiest birthday  my dear 💗 forever grateful for every moment with you 🫶 Best wiches Pooooooookieee 💕💕💕💕",
+            gift: "Virtual Hug 🫂",
+            image: "images/gina-alyssa.jpg",
+          },
+          {
+            sender: "Grand Pa/Ma",
+            message:
+              "Happy birthday, Elissa! 💖 Wishing you endless health, joy, and a long, beautiful life. I can’t wait to see you one day as the brilliant doctor you’re meant to be, smashing every dream and goal you’ve ever had!",
+            gift: "Invitation to the nature 😘",
+            image: "images/alyssa-grandpama.jpg",
+          },
+          {
+            sender: "Shahed",
+            message: "Happy birthday! Can't wait to celebrate with you soon!",
+            gift: "Gift Card 🛍️",
+            image: "",
+          },
+          {
+            sender: "Family",
+            message:
+              "Our little angel, the light of our eyes ✨ Having you close is the secret to our happiness 💖 May God protect you with His kindness, and may you achieve everything you dream of 🌸🌟",
+            gift: "Our Love 💋",
+            image: "images/family.jpg",
+          },
+        ];
+
+        // Show loading animation
+        function showLoading(message) {
+          loader.style.display = "flex";
+          if (message) loaderText.textContent = message;
+        }
+
+        // Hide loading animation
+        function hideLoading() {
+          loader.style.display = "none";
+        }
+
+        // Play sound effect
+        function playSound(sound) {
+          sound.currentTime = 0;
+          sound.play();
+        }
+
+        // Submit password
+        submitBtn.addEventListener("click", function () {
+          playSound(clickSound);
+
+          if (passwordInput.value === correctPassword) {
+            // Password correct
+            playSound(correctSound);
+            showLoading("Preparing your surprise...");
+
+            // Hide password screen
+            passwordScreen.style.transform = "scale(0.8)";
+            passwordScreen.style.opacity = "0";
+
+            setTimeout(() => {
+              passwordScreen.style.display = "none";
+
+              // Simulate loading time (2 seconds)
+              setTimeout(() => {
+                birthdayScreen.style.display = "block";
+                hideLoading();
+                createConfetti();
+
+                // Load first song
                 loadSong(currentSongIndex);
-                if (isPlaying) {
-                    birthdaySong.play();
-                }
+              }, 2000);
+            }, 500);
+
+            // Load cards
+            loadCards();
+          } else {
+            // Wrong password
+            playSound(wrongSound);
+            passwordInput.style.borderColor = "red";
+            passwordInput.style.animation = "shake 0.5s";
+            passwordInput.value = "";
+            passwordInput.placeholder = "Wrong code! Try again";
+
+            // Reset animation
+            setTimeout(() => {
+              passwordInput.style.animation = "none";
+            }, 500);
+          }
+        });
+
+        // Load song
+        function loadSong(index) {
+          showLoading(`Loading ${songs[index].title}...`);
+          birthdaySong.src = songs[index].src;
+          songInfoEl.textContent = songs[index].title;
+
+          birthdaySong.addEventListener("loadedmetadata", function () {
+            durationEl.textContent = formatTime(birthdaySong.duration);
+            hideLoading();
+          });
+
+          birthdaySong.addEventListener("error", function () {
+            hideLoading();
+            songInfoEl.textContent = "Error loading song";
+          });
+        }
+
+        // Play/pause song
+        function togglePlay() {
+          playSound(clickSound);
+
+          if (isPlaying) {
+            birthdaySong.pause();
+            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+          } else {
+            if (!birthdaySong.src) {
+              loadSong(currentSongIndex);
             }
-            
-            // Next song
-            function nextSong() {
-                playSound(clickSound);
-                currentSongIndex++;
-                if (currentSongIndex > songs.length - 1) {
-                    currentSongIndex = 0;
-                }
-                loadSong(currentSongIndex);
-                if (isPlaying) {
-                    birthdaySong.play();
-                }
+            birthdaySong
+              .play()
+              .then(() => {
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+              })
+              .catch((e) => {
+                songInfoEl.textContent = "Click play again to start";
+              });
+          }
+          isPlaying = !isPlaying;
+        }
+
+        // Previous song
+        function prevSong() {
+          playSound(clickSound);
+          currentSongIndex--;
+          if (currentSongIndex < 0) {
+            currentSongIndex = songs.length - 1;
+          }
+          loadSong(currentSongIndex);
+          if (isPlaying) {
+            birthdaySong.play();
+          }
+        }
+
+        // Next song
+        function nextSong() {
+          playSound(clickSound);
+          currentSongIndex++;
+          if (currentSongIndex > songs.length - 1) {
+            currentSongIndex = 0;
+          }
+          loadSong(currentSongIndex);
+          if (isPlaying) {
+            birthdaySong.play();
+          }
+        }
+
+        // Update progress bar
+        function updateProgress(e) {
+          const { duration, currentTime } = e.srcElement;
+          const progressPercent = (currentTime / duration) * 100;
+          progressBar.style.width = `${progressPercent}%`;
+          currentTimeEl.textContent = formatTime(currentTime);
+        }
+
+        // Set progress bar
+        function setProgress(e) {
+          playSound(clickSound);
+          const width = this.clientWidth;
+          const clickX = e.offsetX;
+          const duration = birthdaySong.duration;
+          birthdaySong.currentTime = (clickX / width) * duration;
+        }
+
+        // Format time
+        function formatTime(seconds) {
+          const mins = Math.floor(seconds / 60);
+          const secs = Math.floor(seconds % 60);
+          return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+        }
+
+        // Event listeners for music player
+        playBtn.addEventListener("click", togglePlay);
+        prevBtn.addEventListener("click", prevSong);
+        nextBtn.addEventListener("click", nextSong);
+        birthdaySong.addEventListener("timeupdate", updateProgress);
+        birthdaySong.addEventListener("ended", nextSong);
+        progressContainer.addEventListener("click", setProgress);
+
+        // Load birthday cards
+        function loadCards() {
+          birthdayCards.forEach((card, index) => {
+            const cardElement = document.createElement("div");
+            cardElement.className = "card";
+
+            // Add 'has-image' class if card has an image
+            if (card.image) {
+              cardElement.classList.add("has-image");
             }
-            
-            // Update progress bar
-            function updateProgress(e) {
-                const { duration, currentTime } = e.srcElement;
-                const progressPercent = (currentTime / duration) * 100;
-                progressBar.style.width = `${progressPercent}%`;
-                currentTimeEl.textContent = formatTime(currentTime);
-            }
-            
-            // Set progress bar
-            function setProgress(e) {
-                playSound(clickSound);
-                const width = this.clientWidth;
-                const clickX = e.offsetX;
-                const duration = birthdaySong.duration;
-                birthdaySong.currentTime = (clickX / width) * duration;
-            }
-            
-            // Format time
-            function formatTime(seconds) {
-                const mins = Math.floor(seconds / 60);
-                const secs = Math.floor(seconds % 60);
-                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-            }
-            
-            // Event listeners for music player
-            playBtn.addEventListener('click', togglePlay);
-            prevBtn.addEventListener('click', prevSong);
-            nextBtn.addEventListener('click', nextSong);
-            birthdaySong.addEventListener('timeupdate', updateProgress);
-            birthdaySong.addEventListener('ended', nextSong);
-            progressContainer.addEventListener('click', setProgress);
-            
-            // Load birthday cards
-            function loadCards() {
-                birthdayCards.forEach((card, index) => {
-                    const cardElement = document.createElement('div');
-                    cardElement.className = 'card';
-                    
-                    // Add 'has-image' class if card has an image
-                    if (card.image) {
-                        cardElement.classList.add('has-image');
-                    }
-                    
-                    cardElement.innerHTML = `
-                        ${card.image ? `<img src="${card.image}" class="card-image" alt="${card.sender}">` : ''}
+
+            cardElement.innerHTML = `
+                        ${
+                          card.image
+                            ? `<img src="${card.image}" class="card-image" alt="${card.sender}">`
+                            : ""
+                        }
                         <div class="card-content">
                             <div class="card-sender">From: ${card.sender}</div>
                             <p class="card-message">${card.message}</p>
                             <div class="card-gift">${card.gift}</div>
                         </div>
                     `;
-                    
-                    // Add click effect to expand card
-                    cardElement.addEventListener('click', function() {
-                        playSound(clickSound);
-                        
-                        // Close all other cards first
-                        document.querySelectorAll('.card').forEach(c => {
-                            if (c !== this) c.classList.remove('active');
-                        });
-                        
-                        // Toggle this card
-                        this.classList.toggle('active');
-                    });
-                    
-                    cardsContainer.appendChild(cardElement);
-                    
-                    // Add animation delay for each card
-                    cardElement.style.animationDelay = `${index * 0.2}s`;
-                });
-            }
-            
-            // Create confetti effect
-            function createConfetti() {
-                const container = document.querySelector('.container');
-                
-                for (let i = 0; i < 100; i++) {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    
-                    // Random properties
-                    const colors = ['#ff6b8b', '#ffb3c6', '#ffd166', '#06d6a0', '#118ab2'];
-                    const shapes = ['circle', 'square', 'triangle'];
-                    
-                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.left = Math.random() * 100 + 'vw';
-                    confetti.style.top = -10 + 'px';
-                    confetti.style.width = Math.random() * 10 + 5 + 'px';
-                    confetti.style.height = Math.random() * 10 + 5 + 'px';
-                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-                    
-                    container.appendChild(confetti);
-                    
-                    // Animate confetti
-                    setTimeout(() => {
-                        confetti.style.opacity = '1';
-                        confetti.style.top = '100vh';
-                        confetti.style.left = Math.random() * 100 + 'vw';
-                        confetti.style.transition = `all ${Math.random() * 3 + 2}s ease-out`;
-                        
-                        // Remove confetti after animation
-                        setTimeout(() => {
-                            confetti.remove();
-                        }, 5000);
-                    }, i * 30);
-                }
-            }
-            
-            // Allow Enter key to submit password
-            passwordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    submitBtn.click();
-                }
+
+            // Add click effect to expand card
+            cardElement.addEventListener("click", function () {
+              playSound(clickSound);
+
+              // Close all other cards first
+              document.querySelectorAll(".card").forEach((c) => {
+                if (c !== this) c.classList.remove("active");
+              });
+
+              // Toggle this card
+              this.classList.toggle("active");
             });
+
+            cardsContainer.appendChild(cardElement);
+
+            // Add animation delay for each card
+            cardElement.style.animationDelay = `${index * 0.2}s`;
+          });
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+          const container = document.querySelector(".container");
+
+          for (let i = 0; i < 100; i++) {
+            const confetti = document.createElement("div");
+            confetti.className = "confetti";
+
+            // Random properties
+            const colors = [
+              "#ff6b8b",
+              "#ffb3c6",
+              "#ffd166",
+              "#06d6a0",
+              "#118ab2",
+            ];
+            const shapes = ["circle", "square", "triangle"];
+
+            confetti.style.backgroundColor =
+              colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = Math.random() * 100 + "vw";
+            confetti.style.top = -10 + "px";
+            confetti.style.width = Math.random() * 10 + 5 + "px";
+            confetti.style.height = Math.random() * 10 + 5 + "px";
+            confetti.style.borderRadius = Math.random() > 0.5 ? "50%" : "0";
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+            container.appendChild(confetti);
+
+            // Animate confetti
+            setTimeout(() => {
+              confetti.style.opacity = "1";
+              confetti.style.top = "100vh";
+              confetti.style.left = Math.random() * 100 + "vw";
+              confetti.style.transition = `all ${
+                Math.random() * 3 + 2
+              }s ease-out`;
+
+              // Remove confetti after animation
+              setTimeout(() => {
+                confetti.remove();
+              }, 5000);
+            }, i * 30);
+          }
+        }
+
+        // Allow Enter key to submit password
+        passwordInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            submitBtn.click();
+          }
         });
+      });
     </script>
-</body>
+  </body>
 </html>
